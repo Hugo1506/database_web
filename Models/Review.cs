@@ -1,4 +1,8 @@
-﻿namespace database_web.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
+using System.Xml.Linq;
+
+namespace database_web.Models
 {
     public class Review
     {
@@ -13,8 +17,27 @@
         public string conteudo { get; set; }
 
         /// <summary>
-        /// FK do comprador que realizou a review
+        /// FK para o comprador que fez a review 
         /// </summary>
+        [ForeignKey(nameof(Comprador))]
+        [Display(Name = "Comprador")]
+        public int CompradorFK { get; set; }
         public Comprador comprador { get; set; }
+
+        /// <summary>
+        /// FK para o anuncio a que a review pertence
+        /// </summary>
+        [ForeignKey(nameof(Anuncio))]
+        [Display(Name = "Anuncio")]
+        public int AnuncioFK { get; set; }
+        public Anuncio anuncio { get; set; }
+
+        /// <summary>
+        /// FK para o moderador que apaga a review 
+        /// </summary>
+        [ForeignKey(nameof(Moderador))]
+        [Display(Name = "Moderador")]
+        public int ModeradorFK { get; set; }
+        public Moderador moderador { get; set; }
     }
 }

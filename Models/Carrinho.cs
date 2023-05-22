@@ -1,7 +1,13 @@
-﻿namespace database_web.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Runtime.CompilerServices;
+
+namespace database_web.Models
 {
     public class Carrinho
     {
+        public Carrinho() {
+            ListaProdutos = new HashSet<Produto>();
+        }
         /// <summary>
         /// Id do carrinho
         /// </summary>
@@ -17,8 +23,16 @@
         public decimal preco { get; set; }
 
         /// <summary>
-        /// FK para o comprador, dono do carriho 
+        /// FK para o comprador dono do carrinho
         /// </summary>
+        [ForeignKey(nameof(Comprador))] 
+        public int CompradorFK { get; set; }
         public Comprador comprador { get; set; }
+
+        /// <summary>
+        /// Lista de produtos de um carrinho
+        /// </summary>
+        public ICollection<Produto> ListaProdutos { get; set; }
+
     }
 }

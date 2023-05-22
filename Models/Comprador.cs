@@ -5,6 +5,8 @@
         public Comprador()
         {
             ListaReviews = new HashSet<Review>();
+            ListaCarrinhos = new HashSet<Carrinho>();
+            ListaProdutos = new HashSet<Produto>();
         }
 
         /// <summary>
@@ -38,7 +40,18 @@
         public int dinheiro { get; set; }
 
         /// <summary>
-        /// FK para um lista de reviews que o comprador fez
+        /// Lista carrinho do comprador
+        /// </summary>
+        public ICollection<Carrinho> ListaCarrinhos { get; set; }
+
+        /// <summary>
+        /// FK para a lista dos produtos que o comprador comprou
+        /// </summary>
+        public ICollection<Produto> ListaProdutos { get; set; }
+
+
+        /// <summary>
+        /// FK para a lista de reviews que o comprador fez
         /// </summary>
         public ICollection<Review> ListaReviews { get; set; }
 

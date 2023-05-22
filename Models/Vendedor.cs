@@ -4,7 +4,6 @@
     {
         public Vendedor()
         {
-            ListaReviews = new HashSet<Review>();
             ListaAnuncio = new HashSet<Anuncio>();
         }
         /// <summary>
@@ -41,10 +40,5 @@
         /// FK para um lista de anuncios, cujo vendedor fez 
         /// </summary>
         public ICollection<Anuncio> ListaAnuncio { get; set; }
-
-        /// <summary>
-        /// FK para um lista de reviews que o vendedor fez
-        /// </summary>
-        public ICollection<Review> ListaReviews { get; set; }
     }
 }

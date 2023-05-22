@@ -1,4 +1,8 @@
-﻿namespace database_web.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
+using System.Xml.Linq;
+
+namespace database_web.Models
 {
     public class Produto
     {
@@ -17,6 +21,20 @@
         /// </summary>
         public string descricao { get; set;}
 
+        /// <summary>
+        /// FK para o comprador que faz a compra do produto 
+        /// </summary>
+        [ForeignKey(nameof(Comprador))]
+        [Display(Name = "Comprador")]
+        public int CompradorFK { get; set; }
+        public Comprador comprador { get; set; }
 
+        /// <summary>
+        /// FK para o carrinho que contém o produto
+        /// </summary>
+        [ForeignKey(nameof(Carrinho))]
+        [Display(Name = "Carrinho")]
+        public int CarrinhoFK { get; set; }
+        public Carrinho carrinho { get; set; }
     }
 }
