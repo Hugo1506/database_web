@@ -15,16 +15,20 @@ namespace database_web.Models
         /// login do comprador 
         /// </summary>
         [Key]
+        [Required(ErrorMessage = "O {0} é de preenchimento obrigatório")]
+        
         public string login { get; set; }
 
         /// <summary>
         /// password do comprador
         /// </summary>
+        [Required(ErrorMessage = "O {0} é de preenchimento obrigatório")]
         public string password { get; set; }
 
         /// <summary>
         /// nome do comprador
         /// </summary>
+        [Required(ErrorMessage = "O {0} é de preenchimento obrigatório")]
         public string nome { get; set; }
 
         /// <summary>
@@ -35,11 +39,13 @@ namespace database_web.Models
         /// <summary>
         /// endereço email do comprador
         /// </summary>
+        [Required(ErrorMessage = "O {0} é de preenchimento obrigatório")]
         public string email { get; set; }
 
         /// <summary>
         /// quantia de dinheiro do na conta do comprador
         /// </summary>
+        [Required(ErrorMessage = "O {0} é de preenchimento obrigatório")]
         public int dinheiro { get; set; }
 
         /// <summary>
