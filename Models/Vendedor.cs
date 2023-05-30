@@ -1,4 +1,6 @@
-﻿namespace database_web.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace database_web.Models
 {
     public class Vendedor
     {
@@ -9,6 +11,7 @@
         /// <summary>
         /// login do vendedor 
         /// </summary>
+        [Key]
         public string login { get; set; }
 
         /// <summary>

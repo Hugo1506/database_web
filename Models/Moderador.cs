@@ -1,4 +1,6 @@
-﻿namespace database_web.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace database_web.Models
 {
     public class Moderador
     {
@@ -10,6 +12,7 @@
         /// <summary>
         /// login do moderador 
         /// </summary>
+        [Key]
         public string login { get; set; }
 
         /// <summary>

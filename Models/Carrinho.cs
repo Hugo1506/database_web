@@ -20,6 +20,7 @@ namespace database_web.Models
         /// <summary>
         /// preço total do carrinho
         /// </summary>
+        [Column(TypeName = "decimal(10, 2)")]
         public decimal preco { get; set; }
 
         /// <summary>
