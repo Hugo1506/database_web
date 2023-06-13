@@ -159,5 +159,10 @@ namespace database_web.Controllers
         {
           return (_context.comprador?.Any(e => e.login == id)).GetValueOrDefault();
         }
+
+        public IActionResult test()
+        {
+            return Json(new { test = "a" });
+        }
     }
 }
