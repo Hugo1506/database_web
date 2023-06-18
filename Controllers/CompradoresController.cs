@@ -154,7 +154,7 @@ namespace database_web.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
-
+        
         private bool CompradorExists(string id)
         {
           return (_context.comprador?.Any(e => e.login == id)).GetValueOrDefault();
@@ -163,6 +163,24 @@ namespace database_web.Controllers
         public IActionResult test()
         {
             return Json(new { test = "a" });
+        }
+
+        [HttpPost]
+        public IActionResult Post(string login, string password)
+        {
+            string receivedLogin = login;
+            string receivedPassword = password;
+            var comprador = new Comprador
+            {
+                login = receivedLogin,
+                password = receivedPassword,
+                nome = "aa",
+                telefone = "912233548",
+                email = "aa@a.a",
+                dinheiro = 2
+            };
+            Create(comprador);
+            return Ok(); ;
         }
     }
 }
