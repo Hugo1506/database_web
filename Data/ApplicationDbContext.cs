@@ -9,7 +9,7 @@ namespace database_web.Data
     /// <summary>
     /// esta classe representa a Base de Dados do nosso projeto
     /// </summary>
-    public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext : IdentityDbContext
     {
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)

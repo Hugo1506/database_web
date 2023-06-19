@@ -165,22 +165,6 @@ namespace database_web.Controllers
             return Json(new { test = "a" });
         }
 
-        [HttpPost]
-        public IActionResult Post(string login, string password)
-        {
-            string receivedLogin = login;
-            string receivedPassword = password;
-            var comprador = new Comprador
-            {
-                login = receivedLogin,
-                password = receivedPassword,
-                nome = "aa",
-                telefone = "912233548",
-                email = "aa@a.a",
-                dinheiro = 2
-            };
-            Create(comprador);
-            return Ok(); ;
-        }
+        
     }
 }
