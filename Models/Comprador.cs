@@ -28,7 +28,6 @@ namespace database_web.Models
         /// <summary>
         /// nome do comprador
         /// </summary>
-        [Required(ErrorMessage = "O {0} é de preenchimento obrigatório")]
         public string nome { get; set; }
 
         /// <summary>
@@ -45,8 +44,13 @@ namespace database_web.Models
         /// <summary>
         /// quantia de dinheiro do na conta do comprador
         /// </summary>
-        [Required(ErrorMessage = "O {0} é de preenchimento obrigatório")]
         public int dinheiro { get; set; }
+
+        /// <summary>
+        /// atributo para efetuar a ligação entre a base 
+        /// de dados do 'negócio' e a base de dados da autenticação
+        /// </summary>
+        public string UserId { get; set; }
 
         /// <summary>
         /// Lista carrinho do comprador

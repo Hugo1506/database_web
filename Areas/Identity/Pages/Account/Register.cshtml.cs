@@ -108,9 +108,9 @@ namespace database_web.Areas.Identity.Pages.Account
             public string ConfirmPassword { get; set; }
 
             /// <summary>
-            /// atributo para recolher os dados do Criador
+            /// atributo para recolher os dados do Comprador
             /// </summary>
-            public Comprador Criador { get; set; }
+            public Comprador Comprador { get; set; }
 
         }
 
@@ -157,24 +157,24 @@ namespace database_web.Areas.Identity.Pages.Account
                     _logger.LogInformation("User created a new account with password.");
 
                     // ************************************************
-                    // adicionar os dados do CRIADOR à BD
+                    // adicionar os dados do Comprador à BD
                     // ************************************************
 
-                    // atualizar os dados do objeto CRIADOR
-                    Input.Criador.email = Input.Email;
-                    Input.Criador.login = user.Id;
+                    // atualizar os dados do objeto Comprador
+                    Input.Comprador.email = Input.Email;
+                    Input.Comprador.UserId = user.Id;
 
                     // adicionar os dados à BD
                     try
                     {
-                        _context.Add(Input.Criador);
+                        _context.Add(Input.Comprador);
                         await _context.SaveChangesAsync();
                     }
                     catch (Exception)
                     {
                         // não esquecer tratar da exceção
                         // por exemplo, apagar o USER, se não se consegue 
-                        //    criar o CRIADOR
+                        //    criar o Comprador
                         throw;
                     }
 
