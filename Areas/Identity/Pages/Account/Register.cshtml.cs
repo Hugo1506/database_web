@@ -128,15 +128,6 @@ namespace database_web.Areas.Identity.Pages.Account
         {
             returnUrl ??= Url.Content("~/");
             //      ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
-            if (!ModelState.IsValid)
-            {
-                var compradorErrors = ModelState
-                .Where(x => x.Key.StartsWith("Input.Comprador"))
-                .SelectMany(x => x.Value.Errors)
-                .Select(x => x.ErrorMessage)
-                .ToList();
-                var emailadd = Input.Comprador.email;
-            }
                 // se os dados definido no objeto InputModel forem corretos
                 if (ModelState.IsValid)
             {
