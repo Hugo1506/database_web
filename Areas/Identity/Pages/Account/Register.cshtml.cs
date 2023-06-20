@@ -2,27 +2,17 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 #nullable disable
 
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Text.Encodings.Web;
-using System.Threading;
-using System.Threading.Tasks;
-
 using database_web.Data;
 using database_web.Models;
-
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
+using System.ComponentModel.DataAnnotations;
+using System.Text;
+using System.Text.Encodings.Web;
 
 namespace database_web.Areas.Identity.Pages.Account
 {
@@ -110,6 +100,7 @@ namespace database_web.Areas.Identity.Pages.Account
             /// <summary>
             /// atributo para recolher os dados do Comprador
             /// </summary>
+            [Required]
             public Comprador Comprador { get; set; }
 
         }
@@ -137,9 +128,17 @@ namespace database_web.Areas.Identity.Pages.Account
         {
             returnUrl ??= Url.Content("~/");
             //      ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
-
-            // se os dados definido no objeto InputModel forem corretos
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
+            {
+                var compradorErrors = ModelState
+                .Where(x => x.Key.StartsWith("Input.Comprador"))
+                .SelectMany(x => x.Value.Errors)
+                .Select(x => x.ErrorMessage)
+                .ToList();
+                var emailadd = Input.Comprador.email;
+            }
+                // se os dados definido no objeto InputModel forem corretos
+                if (ModelState.IsValid)
             {
 
                 var user = CreateUser();
@@ -160,9 +159,10 @@ namespace database_web.Areas.Identity.Pages.Account
                     // adicionar os dados do Comprador à BD
                     // ************************************************
 
-                    // atualizar os dados do objeto Comprador
                     Input.Comprador.email = Input.Email;
                     Input.Comprador.UserId = user.Id;
+                    Input.Comprador.password = user.PasswordHash;
+
 
                     // adicionar os dados à BD
                     try

@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using database_web.Data;
+﻿using database_web.Data;
 using database_web.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace database_web.Controllers
 {
@@ -22,11 +17,12 @@ namespace database_web.Controllers
         }
 
         // GET: Compradores
+        [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
-              return _context.comprador != null ? 
-                          View(await _context.comprador.ToListAsync()) :
-                          Problem("Entity set 'ApplicationDbContext.comprador'  is null.");
+            return _context.comprador != null ?
+                        View(await _context.comprador.ToListAsync()) :
+                        Problem("Entity set 'ApplicationDbContext.comprador'  is null.");
         }
 
         // GET: Compradores/Details/5
@@ -152,14 +148,14 @@ namespace database_web.Controllers
             {
                 _context.comprador.Remove(comprador);
             }
-            
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
-        
+
         private bool CompradorExists(string id)
         {
-          return (_context.comprador?.Any(e => e.login == id)).GetValueOrDefault();
+            return (_context.comprador?.Any(e => e.login == id)).GetValueOrDefault();
         }
 
         public IActionResult test()
@@ -167,6 +163,6 @@ namespace database_web.Controllers
             return Json(new { test = "a" });
         }
 
-        
+
     }
 }

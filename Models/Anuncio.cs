@@ -1,12 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
-using System.Xml.Linq;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace database_web.Models
 {
     public class Anuncio
     {
-        public Anuncio() {
+        public Anuncio()
+        {
             ListaReviews = new HashSet<Review>();
         }
         /// <summary>

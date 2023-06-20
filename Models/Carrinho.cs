@@ -1,11 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.Runtime.CompilerServices;
 
 namespace database_web.Models
 {
     public class Carrinho
     {
-        public Carrinho() {
+        public Carrinho()
+        {
             ListaProdutos = new HashSet<Produto>();
         }
         /// <summary>
@@ -26,7 +26,7 @@ namespace database_web.Models
         /// <summary>
         /// FK para o comprador dono do carrinho
         /// </summary>
-        [ForeignKey(nameof(Comprador))] 
+        [ForeignKey(nameof(Comprador))]
         public int CompradorFK { get; set; }
         public Comprador comprador { get; set; }
 

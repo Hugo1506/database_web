@@ -1,6 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
-using System.Xml.Linq;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace database_web.Models
 {
@@ -19,7 +18,7 @@ namespace database_web.Models
         /// <summary>
         /// descrição de um produto
         /// </summary>
-        public string descricao { get; set;}
+        public string descricao { get; set; }
 
         /// <summary>
         /// FK para o comprador que faz a compra do produto 

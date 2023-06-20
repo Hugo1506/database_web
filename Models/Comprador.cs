@@ -16,13 +16,12 @@ namespace database_web.Models
         /// </summary>
         [Key]
         [Required(ErrorMessage = "O {0} é de preenchimento obrigatório")]
-        
+
         public string login { get; set; }
 
         /// <summary>
         /// password do comprador
         /// </summary>
-        [Required(ErrorMessage = "O {0} é de preenchimento obrigatório")]
         public string password { get; set; }
 
         /// <summary>
@@ -37,8 +36,9 @@ namespace database_web.Models
 
         /// <summary>
         /// endereço email do comprador
-        /// </summary>
-        [Required(ErrorMessage = "O {0} é de preenchimento obrigatório")]
+        /// </summary>  
+ 
+        [EmailAddress]
         public string email { get; set; }
 
         /// <summary>
@@ -50,6 +50,7 @@ namespace database_web.Models
         /// atributo para efetuar a ligação entre a base 
         /// de dados do 'negócio' e a base de dados da autenticação
         /// </summary>
+
         public string UserId { get; set; }
 
         /// <summary>
