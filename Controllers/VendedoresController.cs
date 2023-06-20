@@ -45,7 +45,9 @@ namespace database_web.Controllers
 
                     _context.Add(vendedorNovo);
                     await _context.SaveChangesAsync();
+
                 }
+                return View("~/Views/Anuncios/Create.cshtml");
                 
             }
             return _context.vendedor != null ? 

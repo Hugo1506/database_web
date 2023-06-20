@@ -17,6 +17,7 @@ namespace database_web.Models
         /// <summary>
         /// preço do produto vendido no anuncio
         /// </summary>
+         [Display(Name = "Preço")]
         public string preco { get; set; }
 
         /// <summary>
@@ -39,5 +40,13 @@ namespace database_web.Models
         /// FK para um lista de reviews pertencentes ao anuncio
         /// </summary>
         public ICollection<Review> ListaReviews { get; set; }
+
+        /// <summary>
+        /// FK para o Produto
+        /// </summary>
+        [ForeignKey(nameof(Produto))]
+        [Display(Name = "Produto")]
+        public int ProdutoFK { get; set; }
+        public Produto Produto { get; set; }
     }
 }

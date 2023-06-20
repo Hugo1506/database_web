@@ -20,7 +20,7 @@ namespace database_web.Models
         /// </summary>
         [ForeignKey(nameof(Comprador))]
         [Display(Name = "Comprador")]
-        public int CompradorFK { get; set; }
+        public string CompradorFK { get; set; }
         public Comprador comprador { get; set; }
 
         /// <summary>
@@ -36,7 +36,7 @@ namespace database_web.Models
         /// </summary>
         [ForeignKey(nameof(Moderador))]
         [Display(Name = "Moderador")]
-        public int ModeradorFK { get; set; }
+        public string ModeradorFK { get; set; }
         public Moderador moderador { get; set; }
     }
 }
