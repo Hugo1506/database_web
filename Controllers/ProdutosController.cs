@@ -56,18 +56,8 @@ namespace database_web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,nome,descricao,CompradorFK,CarrinhoFK")] Produto produto)
+        public async Task<IActionResult> Create([Bind("Id,nome,descricao")] Produto produto)
         {
-            if (!ModelState.IsValid)
-            {
-                var compradorErrors = ModelState
-                    .Where(x => x.Key.StartsWith("Produto"))
-                    .SelectMany(x => x.Value.Errors)
-                    .Select(x => x.ErrorMessage)
-                    .ToList();
-
-                // Log or handle the error messages
-            }
             if (ModelState.IsValid)
             {
                 _context.Add(produto);
@@ -98,7 +88,7 @@ namespace database_web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,nome,descricao,CompradorFK,CarrinhoFK")] Produto produto)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,nome,descricao")] Produto produto)
         {
             if (id != produto.Id)
             {

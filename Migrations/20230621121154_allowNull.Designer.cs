@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using database_web.Data;
 
@@ -11,9 +12,11 @@ using database_web.Data;
 namespace database_web.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230621121154_allowNull")]
+    partial class allowNull
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -232,22 +235,25 @@ namespace database_web.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("ModeradorFK")
+                    b.Property<int>("ModeradorFK")
                         .HasColumnType("int");
 
                     b.Property<int>("ProdutoFK")
                         .HasColumnType("int");
 
-                    b.Property<int?>("VendedorFK")
+                    b.Property<int>("VendedorFK")
                         .HasColumnType("int");
 
                     b.Property<string>("moderadorlogin")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<decimal>("preco")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<string>("preco")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("vendedorlogin")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
@@ -360,13 +366,13 @@ namespace database_web.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("CarrinhoFK")
+                    b.Property<int>("CarrinhoFK")
                         .HasColumnType("int");
 
-                    b.Property<int?>("CompradorFK")
+                    b.Property<int>("CompradorFK")
                         .HasColumnType("int");
 
-                    b.Property<int?>("carrinhoId")
+                    b.Property<int>("carrinhoId")
                         .HasColumnType("int");
 
                     b.Property<string>("compradorlogin")
@@ -522,11 +528,15 @@ namespace database_web.Migrations
 
                     b.HasOne("database_web.Models.Moderador", "moderador")
                         .WithMany("ListaAnuncio")
-                        .HasForeignKey("moderadorlogin");
+                        .HasForeignKey("moderadorlogin")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("database_web.Models.Vendedor", "vendedor")
                         .WithMany("ListaAnuncio")
-                        .HasForeignKey("vendedorlogin");
+                        .HasForeignKey("vendedorlogin")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Produto");
 
@@ -550,7 +560,9 @@ namespace database_web.Migrations
                 {
                     b.HasOne("database_web.Models.Carrinho", "carrinho")
                         .WithMany("ListaProdutos")
-                        .HasForeignKey("carrinhoId");
+                        .HasForeignKey("carrinhoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("database_web.Models.Comprador", "comprador")
                         .WithMany("ListaProdutos")

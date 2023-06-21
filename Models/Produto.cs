@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.CodeAnalysis;
 
 namespace database_web.Models
 {
@@ -25,15 +26,15 @@ namespace database_web.Models
         /// </summary>
         [ForeignKey(nameof(Comprador))]
         [Display(Name = "Comprador")]
-        public int CompradorFK { get; set; }
-        public Comprador comprador { get; set; }
+        public int? CompradorFK { get; set; }
+        public Comprador? comprador { get; set; }
 
         /// <summary>
         /// FK para o carrinho que contém o produto
         /// </summary>
         [ForeignKey(nameof(Carrinho))]
-        [Display(Name = "Carrinho")]
-        public int CarrinhoFK { get; set; }
-        public Carrinho carrinho { get; set; }
+        [Display(Name = "Carrinho")] 
+        public int? CarrinhoFK { get; set; }
+        public Carrinho? carrinho { get; set; }
     }
 }

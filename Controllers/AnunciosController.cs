@@ -48,7 +48,7 @@ namespace database_web.Controllers
         // GET: Anuncios/Create
         public IActionResult Create()
         {
-            ViewData["ProdutoFK"] = new SelectList(_context.produto, "Id", "Id");
+            ViewData["ProdutoFK"] = new SelectList(_context.produto, "Id", "nome");
             return View();
         }
 
@@ -57,15 +57,18 @@ namespace database_web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,preco,ModeradorFK,VendedorFK,ProdutoFK")] Anuncio anuncio)
+        public async Task<IActionResult> Create([Bind("Id,preco,ProdutoFK")] Anuncio anuncio)
         {
-            if (ModelState.IsValid)
+           
+            if(anuncio.ProdutoFK ==null || anuncio.preco == null)
             {
+                return View(anuncio);
+            }
                 _context.Add(anuncio);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
-            }
-            ViewData["ProdutoFK"] = new SelectList(_context.produto, "Id", "Id", anuncio.ProdutoFK);
+           
+            ViewData["ProdutoFK"] = new SelectList(_context.produto, "Id", "nome", anuncio.ProdutoFK);
             return View(anuncio);
         }
 
@@ -82,7 +85,7 @@ namespace database_web.Controllers
             {
                 return NotFound();
             }
-            ViewData["ProdutoFK"] = new SelectList(_context.produto, "Id", "Id", anuncio.ProdutoFK);
+            ViewData["ProdutoFK"] = new SelectList(_context.produto, "Id", "nome", anuncio.ProdutoFK);
             return View(anuncio);
         }
 
@@ -91,7 +94,7 @@ namespace database_web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,preco,ModeradorFK,VendedorFK,ProdutoFK")] Anuncio anuncio)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,preco,ProdutoFK")] Anuncio anuncio)
         {
             if (id != anuncio.Id)
             {
@@ -118,7 +121,7 @@ namespace database_web.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ProdutoFK"] = new SelectList(_context.produto, "Id", "Id", anuncio.ProdutoFK);
+            ViewData["ProdutoFK"] = new SelectList(_context.produto, "Id", "nome", anuncio.ProdutoFK);
             return View(anuncio);
         }
 
@@ -146,6 +149,7 @@ namespace database_web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+
             if (_context.anuncio == null)
             {
                 return Problem("Entity set 'ApplicationDbContext.anuncio'  is null.");

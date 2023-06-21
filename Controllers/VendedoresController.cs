@@ -47,8 +47,8 @@ namespace database_web.Controllers
                     await _context.SaveChangesAsync();
 
                 }
-                return View("~/Views/Anuncios/Create.cshtml");
-                
+                return RedirectToAction("Create", "Anuncios");
+
             }
             return _context.vendedor != null ? 
                           View(await _context.vendedor.ToListAsync()) :

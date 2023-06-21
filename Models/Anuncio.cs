@@ -18,23 +18,23 @@ namespace database_web.Models
         /// preço do produto vendido no anuncio
         /// </summary>
          [Display(Name = "Preço")]
-        public string preco { get; set; }
+        public decimal preco { get; set; }
 
         /// <summary>
         /// FK para o Moderador que apaga o anuncio
         /// </summary>
         [ForeignKey(nameof(Moderador))]
         [Display(Name = "Moderador")]
-        public int ModeradorFK { get; set; }
-        public Moderador moderador { get; set; }
+        public int? ModeradorFK { get; set; }
+        public Moderador? moderador { get; set; }
 
         /// <summary>
         /// FK para o vendedor que fez o anuncio 
         /// </summary>
         [ForeignKey(nameof(Vendedor))]
         [Display(Name = "Vendedor")]
-        public int VendedorFK { get; set; }
-        public Vendedor vendedor { get; set; }
+        public int? VendedorFK { get; set; }
+        public Vendedor? vendedor { get; set; }
 
         /// <summary>
         /// FK para um lista de reviews pertencentes ao anuncio
