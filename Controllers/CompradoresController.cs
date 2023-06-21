@@ -2,6 +2,7 @@
 using database_web.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace database_web.Controllers
@@ -20,6 +21,7 @@ namespace database_web.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
+            
             return _context.comprador != null ?
                         View(await _context.comprador.ToListAsync()) :
                         Problem("Entity set 'ApplicationDbContext.comprador'  is null.");
@@ -39,7 +41,7 @@ namespace database_web.Controllers
             {
                 return NotFound();
             }
-
+            ViewData["CompradorDinheiro"] = comprador.dinheiro;
             return View(comprador);
         }
 
@@ -62,6 +64,7 @@ namespace database_web.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["CompradorDinheiro"] = comprador.dinheiro;
             return View(comprador);
         }
 
@@ -158,11 +161,6 @@ namespace database_web.Controllers
             return (_context.comprador?.Any(e => e.login == id)).GetValueOrDefault();
         }
 
-
-        public async Task<IActionResult> carrinho()
-        {
-            return RedirectToAction("index", "Carrinhos");
-
-        }
+        
     }
 }

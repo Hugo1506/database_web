@@ -15,6 +15,7 @@ namespace database_web.Controllers
 
         public IActionResult Index()
         {
+
             return View();
         }
 

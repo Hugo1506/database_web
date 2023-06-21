@@ -38,7 +38,7 @@ namespace database_web.Models
         /// <summary>
         /// quantia de dinheiro do na conta do moderador
         /// </summary>
-        public int dinheiro { get; set; }
+        public decimal dinheiro { get; set; }
 
         /// <summary>
         /// FK para um lista de anuncios, cujo moderador fez 

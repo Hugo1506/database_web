@@ -44,7 +44,7 @@ namespace database_web.Models
         /// <summary>
         /// quantia de dinheiro do na conta do comprador
         /// </summary>
-        public int dinheiro { get; set; }
+        public decimal dinheiro { get; set; }
 
         /// <summary>
         /// atributo para efetuar a ligação entre a base 
