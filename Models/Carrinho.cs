@@ -27,7 +27,7 @@ namespace database_web.Models
         /// FK para o comprador dono do carrinho
         /// </summary>
         [ForeignKey(nameof(Comprador))]
-        public int CompradorFK { get; set; }
+        public string CompradorFK { get; set; }
         public Comprador comprador { get; set; }
 
         /// <summary>

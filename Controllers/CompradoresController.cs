@@ -158,11 +158,11 @@ namespace database_web.Controllers
             return (_context.comprador?.Any(e => e.login == id)).GetValueOrDefault();
         }
 
-        public IActionResult test()
+
+        public async Task<IActionResult> carrinho()
         {
-            return Json(new { test = "a" });
+            return RedirectToAction("index", "Carrinhos");
+
         }
-
-
     }
 }

@@ -13,7 +13,7 @@ namespace database_web.Controllers
     public class AnunciosController : Controller
     {
         private readonly ApplicationDbContext _context;
-
+        private int anuncioId = 0;
         public AnunciosController(ApplicationDbContext context)
         {
             _context = context;
@@ -41,7 +41,7 @@ namespace database_web.Controllers
             {
                 return NotFound();
             }
-
+            anuncioId=anuncio.Id;
             return View(anuncio);
         }
 
@@ -59,10 +59,23 @@ namespace database_web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,preco,ProdutoFK")] Anuncio anuncio)
         {
-           
-            if(anuncio.ProdutoFK ==null || anuncio.preco == null)
+
+
+            if (anuncio.ProdutoFK ==null || anuncio.preco == null)
             {
                 return View(anuncio);
+            }
+            var userId = User.Identity.Name;
+            if (userId != null)
+            {
+                var vendedor = await _context.vendedor
+                 .FirstOrDefaultAsync(m => m.email == userId);
+                anuncio.vendedor = vendedor;
+                if (anuncio.vendedor != null)
+                {
+                    anuncio.VendedorFK = anuncio.vendedor.login;
+                }
+                
             }
                 _context.Add(anuncio);
                 await _context.SaveChangesAsync();
@@ -168,5 +181,40 @@ namespace database_web.Controllers
         {
           return (_context.anuncio?.Any(e => e.Id == id)).GetValueOrDefault();
         }
+
+        public async Task<IActionResult> Compra()
+        {
+            var userId = User.Identity.Name;
+
+            var comprador = await _context.comprador.FirstOrDefaultAsync(m => m.email == userId);
+
+            var carrinhosPessoais = await _context.carrinho
+            .Where(c => c.CompradorFK == comprador.login)
+            .ToListAsync();
+            ViewData["Carrinhos"] = new SelectList(carrinhosPessoais, "Id", "nome","preco");
+            return View();
+        }
+        public async Task<IActionResult> EnviaNovoCarrinho()
+        {
+            var anuncio = await _context.anuncio
+                .Include(a => a.Produto)
+                .FirstOrDefaultAsync(m => m.Id == anuncioId);
+            var userId = User.Identity.Name;
+            var comprador = await _context.comprador.FirstOrDefaultAsync(m => m.email == userId);
+            var novoCarrinho = new Carrinho
+            {
+                nome = "NovoCarrinho",
+                preco = anuncio.preco,
+                CompradorFK = comprador.login,
+            };
+            return RedirectToAction("Create", "Carrinhos", new { car = novoCarrinho });
+        }
+
+        public async Task<IActionResult> EnviaCarrinho()
+        {
+
+            return RedirectToAction("Create", "Anuncios");
+        }
+
     }
 }

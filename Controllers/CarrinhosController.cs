@@ -22,9 +22,16 @@ namespace database_web.Controllers
         // GET: Carrinhos
         public async Task<IActionResult> Index()
         {
-              return _context.carrinho != null ? 
-                          View(await _context.carrinho.ToListAsync()) :
-                          Problem("Entity set 'ApplicationDbContext.carrinho'  is null.");
+            var userId = User.Identity.Name;
+
+            var comprador = await _context.comprador.FirstOrDefaultAsync(m => m.email == userId);
+
+            var carrinhosPessoais = await _context.carrinho
+            .Where(c => c.CompradorFK == comprador.login)
+            .ToListAsync();
+
+            return View(carrinhosPessoais);
+           
         }
 
         // GET: Carrinhos/Details/5
@@ -58,13 +65,25 @@ namespace database_web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,nome,preco,CompradorFK")] Carrinho carrinho)
         {
-            if (ModelState.IsValid)
+
+            var userId = User.Identity.Name;
+            if (userId != null)
             {
-                _context.Add(carrinho);
+                var comprador = await _context.comprador.FirstOrDefaultAsync(m => m.email == userId);
+                var carrinhoNovo = new Carrinho
+                {
+                    nome = carrinho.nome,
+                    preco = 0,
+                    CompradorFK = comprador.login,
+                };
+
+                carrinhoNovo.comprador = comprador;
+                _context.Add(carrinhoNovo);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+
+                return RedirectToAction("Index");
             }
-            return View(carrinho);
+                 return View(carrinho);
         }
 
         // GET: Carrinhos/Edit/5

@@ -33,7 +33,7 @@ namespace database_web.Models
         /// </summary>
         [ForeignKey(nameof(Vendedor))]
         [Display(Name = "Vendedor")]
-        public int? VendedorFK { get; set; }
+        public string? VendedorFK { get; set; }
         public Vendedor? vendedor { get; set; }
 
         /// <summary>
