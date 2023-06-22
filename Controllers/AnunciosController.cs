@@ -32,6 +32,11 @@ namespace database_web.Controllers
             return View(await applicationDbContext.ToListAsync());
         }
 
+        public IActionResult verReviews(int? id)
+        {
+            return RedirectToAction("Index", "Reviews", new { anunc = id });
+        }
+
         // GET: Anuncios/Details/5
         public async Task<IActionResult> Compra(int? id)
         {

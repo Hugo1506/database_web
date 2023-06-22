@@ -34,10 +34,10 @@
                 @Html.DisplayFor(modelItem => item.Produto.Id)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="verReviews" asp-route-id="@item.Id">Ver as reviews</a> |
+                <a asp-action="Edit" asp-route-id="@item.Id">escrever Review</a> |
                 <a asp-action="Compra" asp-route-id="@item.Id">Comprar</a> |
                 <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-               
             </td>
         </tr>
 }

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using database_web.Data;
 using database_web.Models;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace database_web.Controllers
 {
@@ -20,11 +21,13 @@ namespace database_web.Controllers
         }
 
         // GET: Reviews
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int anunc)
         {
-              return _context.review != null ? 
-                          View(await _context.review.ToListAsync()) :
-                          Problem("Entity set 'ApplicationDbContext.review'  is null.");
+
+            var reviewsNovas = await _context.review
+            .Where(m => m.AnuncioFK == anunc)
+             .ToListAsync();
+            return View(reviewsNovas);
         }
 
         // GET: Reviews/Details/5
@@ -59,6 +62,7 @@ namespace database_web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,conteudo,AnuncioFK")] Review review)
         {
+            var anuncId = review.AnuncioFK;
             var userId = User.Identity.Name;
             if (userId != null)
             {
@@ -68,14 +72,17 @@ namespace database_web.Controllers
 
                 review.anuncio = await _context.anuncio
                  .FirstOrDefaultAsync(m => m.Id == review.AnuncioFK);
+                anuncId = review.anuncio.Id;
+                
 
                 _context.Add(review);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("index", new { anunc = anuncId }); ;
+
             }
             
 
-            return View(review);
+            return RedirectToAction("index", new { anunc = anuncId }); ;
         }
 
         // GET: Reviews/Edit/5
