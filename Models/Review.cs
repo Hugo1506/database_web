@@ -36,7 +36,7 @@ namespace database_web.Models
         /// </summary>
         [ForeignKey(nameof(Moderador))]
         [Display(Name = "Moderador")]
-        public string ModeradorFK { get; set; }
-        public Moderador moderador { get; set; }
+        public string? ModeradorFK { get; set; }
+        public Moderador? moderador { get; set; }
     }
 }

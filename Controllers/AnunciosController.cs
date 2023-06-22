@@ -74,6 +74,10 @@ namespace database_web.Controllers
                 }
 
             }
+            else
+            {
+                return View("dinheiroInsuf");
+            }
             
 
             return View(anuncio);
@@ -122,18 +126,7 @@ namespace database_web.Controllers
         // GET: Anuncios/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.anuncio == null)
-            {
-                return NotFound();
-            }
-
-            var anuncio = await _context.anuncio.FindAsync(id);
-            if (anuncio == null)
-            {
-                return NotFound();
-            }
-            ViewData["ProdutoFK"] = new SelectList(_context.produto, "Id", "nome", anuncio.ProdutoFK);
-            return View(anuncio);
+            return RedirectToAction("create", "Reviews", new { anunc = id });
         }
 
         // POST: Anuncios/Edit/5
@@ -216,6 +209,8 @@ namespace database_web.Controllers
         {
           return (_context.anuncio?.Any(e => e.Id == id)).GetValueOrDefault();
         }
+
+        
 
      
 

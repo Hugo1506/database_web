@@ -1,0 +1,35 @@
+﻿@model database_web.Models.Review
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h4>Review</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="conteudo" class="control-label"></label>
+                <input asp-for="conteudo" class="form-control" />
+                <span asp-validation-for="conteudo" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input asp-for="AnuncioFK" value="@ViewBag.AnuncioFK" class="form-control" />
+                <span asp-validation-for="AnuncioFK" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Postar" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-controller="Anuncios" asp-action="Index" >Voltar</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
