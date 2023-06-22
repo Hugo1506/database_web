@@ -1,0 +1,39 @@
+﻿@model IEnumerable<database_web.Models.Review>
+
+@{
+    ViewData["Title"] = "ReviewsPessoais";
+}
+
+<h1>As minhas reviews</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.conteudo)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CompradorFK)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AnuncioFK)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.conteudo)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CompradorFK)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AnuncioFK)
+            </td>
+
+        </tr>
+}
+    </tbody>
+</table>

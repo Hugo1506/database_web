@@ -30,6 +30,25 @@ namespace database_web.Controllers
             return View(reviewsNovas);
         }
 
+        public async Task<IActionResult> ReviewsPessoais()
+        {
+
+            var userId = User.Identity.Name;
+            if (userId != null)
+            {
+                var comprador = await _context.comprador
+                 .FirstOrDefaultAsync(m => m.email == userId);
+
+                var reviewsNovas = await _context.review
+                .Where(m => m.CompradorFK == comprador.login)
+                .ToListAsync();
+
+                return View(reviewsNovas);
+
+            }
+            return RedirectToAction("Index","Home ");
+        }
+
         // GET: Reviews/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -77,12 +96,12 @@ namespace database_web.Controllers
 
                 _context.Add(review);
                 await _context.SaveChangesAsync();
-                return RedirectToAction("index", new { anunc = anuncId }); ;
+                return RedirectToAction("index", new { anunc = anuncId }); 
 
             }
             
 
-            return RedirectToAction("index", new { anunc = anuncId }); ;
+            return RedirectToAction("index", new { anunc = anuncId }); 
         }
 
         // GET: Reviews/Edit/5
