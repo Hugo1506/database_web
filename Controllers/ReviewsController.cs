@@ -178,7 +178,7 @@ namespace database_web.Controllers
                         return NotFound();
                     }
 
-                    return View(review);
+                   return RedirectToAction("Index", "Home");
 
                 }
                 return RedirectToAction("noPerms");
@@ -209,7 +209,7 @@ namespace database_web.Controllers
             }
             
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Index" ,"Home");
         }
 
         private bool ReviewExists(int id)
