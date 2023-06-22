@@ -173,15 +173,19 @@ namespace database_web.Controllers
         // GET: Anuncios/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
+            //verifica se alguem está logged in
             var userId = User.Identity.Name;
             if (userId != null)
             {
                 var comprador = await _context.vendedor
                  .FirstOrDefaultAsync(m => m.email == userId);
+                //verifica se o comprador conseguido a partir do userId existe 
                 if (comprador != null)
                 {
+                    //moderador conseguido a partir do email do comprador
                     var moderador = await _context.moderador.FirstOrDefaultAsync(m => m.email == comprador.email);
 
+                    //se o comprador existir procede para a página de delete senão mostra uma página de erro
                     if (moderador != null)
                     {
 
@@ -238,6 +242,7 @@ namespace database_web.Controllers
         }
 
         
+        //mostra a página de noPerms
         public IActionResult noPerms()
         {
             return View();

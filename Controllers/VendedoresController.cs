@@ -24,15 +24,20 @@ namespace database_web.Controllers
         // GET: Vendedores
         public async Task<IActionResult> Index()
         {
+            //user que está logged in 
             var userId = User.Identity.Name;
             if (userId != null)
             {
+                //vendedor com o email igual ao userId do user que está logged in 
                 var vendedor = await _context.vendedor
                  .FirstOrDefaultAsync(m => m.email == userId);
+                //se o vendedor não existir
                 if(vendedor == null)
                 {
+                    //comprador que está logged in
                     var comprador = await _context.comprador.FirstOrDefaultAsync(m => m.email == userId);
 
+                    //criação do novo vendedor a partir do comprador que está logged in
                     var vendedorNovo = new Vendedor
                     {
                         login = comprador.login, 
@@ -43,6 +48,7 @@ namespace database_web.Controllers
                         dinheiro = comprador.dinheiro 
                     };
 
+                    //adicção do novo vendedor à base de dados
                     _context.Add(vendedorNovo);
                     await _context.SaveChangesAsync();
 

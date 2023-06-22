@@ -31,15 +31,19 @@ namespace database_web.Controllers
             return View(reviewsNovas);
         }
 
+
+        //Reviews feitas pelo utilizador
         public async Task<IActionResult> ReviewsPessoais()
         {
-
+            //user que está logged in 
             var userId = User.Identity.Name;
             if (userId != null)
             {
+                //comprador que está logged in 
                 var comprador = await _context.comprador
                  .FirstOrDefaultAsync(m => m.email == userId);
 
+                //reviews que têm como comprador o utilizador que está logged in
                 var reviewsNovas = await _context.review
                 .Where(m => m.CompradorFK == comprador.login)
                 .ToListAsync();
@@ -82,19 +86,24 @@ namespace database_web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,conteudo,AnuncioFK")] Review review)
         {
+            //chave forasteira para o anuncio
             var anuncId = review.AnuncioFK;
+            //user que está logged in 
             var userId = User.Identity.Name;
             if (userId != null)
             {
+                //comprador que está logged in
                 var comprador = await _context.comprador
                  .FirstOrDefaultAsync(m => m.email == userId);
+                //chave foreasteira para o comprador
                 review.CompradorFK = comprador.login;
 
+                //anuncio a que a review está associada
                 review.anuncio = await _context.anuncio
                  .FirstOrDefaultAsync(m => m.Id == review.AnuncioFK);
                 anuncId = review.anuncio.Id;
                 
-
+                //adiciona a review à base de dados
                 _context.Add(review);
                 await _context.SaveChangesAsync();
                 return RedirectToAction("index", new { anunc = anuncId }); 
@@ -159,9 +168,11 @@ namespace database_web.Controllers
         // GET: Reviews/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
+            //user que está logged in 
             var userId = User.Identity.Name;
             if (userId != null)
             {
+                //comprador que está logged in 
                 var comprador = await _context.vendedor
                  .FirstOrDefaultAsync(m => m.email == userId);
                 if (comprador != null)
@@ -171,6 +182,7 @@ namespace database_web.Controllers
                         return NotFound();
                     }
 
+                    //review a ser a pagada
                     var review = await _context.review
                         .FirstOrDefaultAsync(m => m.Id == id);
                     if (review == null)
@@ -186,6 +198,8 @@ namespace database_web.Controllers
             return RedirectToAction("noPerms");
         }
 
+
+        //pagina que mostra o error de falta de permições
         public IActionResult noPerms()
         {
             return View();
