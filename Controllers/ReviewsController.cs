@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using database_web.Data;
 using database_web.Models;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.Identity.Client;
 
 namespace database_web.Controllers
 {
@@ -158,20 +159,39 @@ namespace database_web.Controllers
         // GET: Reviews/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.review == null)
+            var userId = User.Identity.Name;
+            if (userId != null)
             {
-                return NotFound();
-            }
+                var comprador = await _context.vendedor
+                 .FirstOrDefaultAsync(m => m.email == userId);
+                if (comprador != null)
+                {
+                    if (id == null || _context.review == null)
+                    {
+                        return NotFound();
+                    }
 
-            var review = await _context.review
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (review == null)
-            {
-                return NotFound();
-            }
+                    var review = await _context.review
+                        .FirstOrDefaultAsync(m => m.Id == id);
+                    if (review == null)
+                    {
+                        return NotFound();
+                    }
 
-            return View(review);
+                    return View(review);
+
+                }
+                return RedirectToAction("noPerms");
+            }
+            return RedirectToAction("noPerms");
         }
+
+        public IActionResult noPerms()
+        {
+            return View();
+        }
+
+         
 
         // POST: Reviews/Delete/5
         [HttpPost, ActionName("Delete")]

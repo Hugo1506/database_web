@@ -173,21 +173,43 @@ namespace database_web.Controllers
         // GET: Anuncios/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.anuncio == null)
+            var userId = User.Identity.Name;
+            if (userId != null)
             {
-                return NotFound();
-            }
+                var comprador = await _context.vendedor
+                 .FirstOrDefaultAsync(m => m.email == userId);
+                if (comprador != null)
+                {
+                    var moderador = await _context.moderador.FirstOrDefaultAsync(m => m.email == comprador.email);
 
-            var anuncio = await _context.anuncio
-                .Include(a => a.Produto)
-                .FirstOrDefaultAsync(m => m.Id == id);
-           
-            if (anuncio == null)
-            {
-                return NotFound();
-            }
+                    if (moderador != null)
+                    {
 
-            return View(anuncio);
+                        if (id == null || _context.anuncio == null)
+                        {
+                            return NotFound();
+                        }
+
+                        var anuncio = await _context.anuncio
+                            .Include(a => a.Produto)
+                            .FirstOrDefaultAsync(m => m.Id == id);
+
+                        if (anuncio == null)
+                        {
+                            return NotFound();
+                        }
+
+                        return View(anuncio);
+                    }
+                    else
+                    {
+                        return RedirectToAction("noPerms");
+                    }
+
+                }
+                return RedirectToAction("noPerms");
+            }
+            return RedirectToAction("noPerms");
         }
 
         // POST: Anuncios/Delete/5
@@ -216,7 +238,10 @@ namespace database_web.Controllers
         }
 
         
-
+        public IActionResult noPerms()
+        {
+            return View();
+        }
      
 
     }
