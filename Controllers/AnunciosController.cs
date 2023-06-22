@@ -38,6 +38,7 @@ namespace database_web.Controllers
         }
 
         // GET: Anuncios/Details/5
+        //quando é cliquado o butão de Compra
         public async Task<IActionResult> Compra(int? id)
         {
             if (id == null || _context.anuncio == null)
@@ -45,28 +46,36 @@ namespace database_web.Controllers
                 return NotFound();
             }
 
+            //anuncio que foi clicado
             var anuncio = await _context.anuncio
                 .Include(a => a.Produto)
                 .FirstOrDefaultAsync(m => m.Id == id);
+            //user que está logged in
             var userId = User.Identity.Name;
 
+            //comprador que está logged in 
             var comprador = await _context.comprador.FirstOrDefaultAsync(m => m.email == userId);
 
+            //vendedor que fez o anuncio
             var vendedor = await _context.vendedor.FirstOrDefaultAsync(m => m.login == anuncio.VendedorFK);
 
+            //caso o comprador seja também vendedor
             var vendedorCompradorTask = _context.vendedor.FirstOrDefaultAsync(m => m.email == comprador.email);
-
             var vendedorComprador = await vendedorCompradorTask;
+            //se o comprador tiver dinheiro suficiente
             if (comprador.dinheiro >= anuncio.preco)
             {
+                //vendedor recebe o dinheiro da venda
                 vendedor.dinheiro += anuncio.preco;
                 _context.Entry(vendedor).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
 
+                //comprador dá o dinheiro da venda
                 comprador.dinheiro -= anuncio.preco;
                 _context.Entry(comprador).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
 
+                //verifica se o comprador também é vendedor se for retira também o dinheiro da venda da sua entrada na tabela vendedor
                 if(vendedorComprador != null)
                 {
                     vendedorComprador.dinheiro += anuncio.preco; 
@@ -103,16 +112,21 @@ namespace database_web.Controllers
         public async Task<IActionResult> Create([Bind("Id,preco,ProdutoFK")] Anuncio anuncio)
         {
 
-
+            //verifica se foram inseridos os dados corretamente
             if (anuncio.ProdutoFK ==null || anuncio.preco == null)
             {
                 return View(anuncio);
             }
+
+            //user logged in 
             var userId = User.Identity.Name;
             if (userId != null)
             {
+                //vendedor que está logged in
                 var vendedor = await _context.vendedor
                  .FirstOrDefaultAsync(m => m.email == userId);
+
+                //chave forasteira do anuncio para a tabela vendedor
                 anuncio.vendedor = vendedor;
                 if (anuncio.vendedor != null)
                 {
@@ -120,6 +134,8 @@ namespace database_web.Controllers
                 }
                 
             }
+
+                //cria o anuncio
                 _context.Add(anuncio);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));

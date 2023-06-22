@@ -17,7 +17,10 @@ namespace database_web.Models
         /// <summary>
         /// preço do produto vendido no anuncio
         /// </summary>
-         [Display(Name = "Preço")]
+        [Display(Name = "Preço")]
+        [RegularExpression("[0-9]+(.|,)?[0-9]{0,2}",
+         ErrorMessage = "Só pode escrever algarismos e, " +
+         "se desejar, duas casas decimais no {0}")]
         public decimal preco { get; set; }
 
         /// <summary>

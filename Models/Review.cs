@@ -13,6 +13,7 @@ namespace database_web.Models
         /// <summary>
         /// conteudo de um review 
         /// </summary>
+        [StringLength(255)]
         public string conteudo { get; set; }
 
         /// <summary>

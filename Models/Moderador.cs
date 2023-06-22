@@ -38,6 +38,9 @@ namespace database_web.Models
         /// <summary>
         /// quantia de dinheiro do na conta do moderador
         /// </summary>
+        [RegularExpression("[0-9]+(.|,)?[0-9]{0,2}",
+         ErrorMessage = "Só pode escrever algarismos e, " +
+         "se desejar, duas casas decimais no {0}")]
         public decimal dinheiro { get; set; }
 
         /// <summary>

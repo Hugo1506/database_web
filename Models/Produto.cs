@@ -14,11 +14,13 @@ namespace database_web.Models
         /// <summary>
         /// nome de um produto 
         /// </summary>
+        [StringLength(50)]
         public string nome { get; set; }
 
         /// <summary>
         /// descrição de um produto
         /// </summary>
+        [StringLength(200)]
         public string descricao { get; set; }
 
         /// <summary>
