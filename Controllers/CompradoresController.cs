@@ -7,7 +7,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace database_web.Controllers
 {
-    [Authorize]
     public class CompradoresController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -161,6 +160,31 @@ namespace database_web.Controllers
             return (_context.comprador?.Any(e => e.login == id)).GetValueOrDefault();
         }
 
-        
+
+        [Route("compradores/test")]
+        [HttpPost]
+        public async Task<IActionResult> Test([FromBody] Dictionary<string, string> credentials)
+        {
+            if (credentials.TryGetValue("login", out var login) && credentials.TryGetValue("password", out var password))
+            {
+                var loginReceived = login;
+                var pass = password;
+
+                var compradorTest = await _context.vendedor
+                 .FirstOrDefaultAsync(m => m.login == loginReceived);
+
+                if (compradorTest == null)
+                {
+                    return BadRequest("User não existe");
+                }
+
+                return Ok();
+            }
+            else
+            {
+                return BadRequest("Invalid credentials format");
+            }
+        }
+
     }
 }
