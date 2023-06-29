@@ -25,15 +25,20 @@ namespace database_web.Controllers
         }
 
         // GET: Anuncios
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? review)
         {
-
-            var applicationDbContext = _context.anuncio.Include(a => a.Produto);
-
+            if (review != null)
+            {
+                var applicationDbContext = _context.anuncio.Include(a => a.Produto)
+                                            .Where(a => a.Id == review ) ;
+                return View(await applicationDbContext.ToListAsync());
+            }
+            else
+            {
+                var applicationDbContext = _context.anuncio.Include(a => a.Produto);
+                return View(await applicationDbContext.ToListAsync());
+            }
             
-
-
-            return View(await applicationDbContext.ToListAsync());
         }
 
         public IActionResult verReviews(int? id)

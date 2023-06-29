@@ -233,6 +233,12 @@ namespace database_web.Controllers
           return (_context.review?.Any(e => e.Id == id)).GetValueOrDefault();
         }
 
+        public async Task<IActionResult> verAnuncio(int id)
+        {
+            var reviewAtual = await _context.review
+                        .FirstOrDefaultAsync(m => m.Id == id);
 
+            return RedirectToAction("Index", "Anuncios", new { review = reviewAtual.AnuncioFK });
+        }
     }
 }
