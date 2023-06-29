@@ -25,9 +25,9 @@ namespace database_web.Controllers
         public async Task<IActionResult> Index(int anunc)
         {
 
-            var reviewsNovas = await _context.review
+            var reviewsNovas = await _context.review.Include(m=>m.anuncio)
             .Where(m => m.AnuncioFK == anunc)
-             .ToListAsync();
+            .ToListAsync();
             return View(reviewsNovas);
         }
 
@@ -44,9 +44,11 @@ namespace database_web.Controllers
                  .FirstOrDefaultAsync(m => m.email == userId);
 
                 //reviews que têm como comprador o utilizador que está logged in
-                var reviewsNovas = await _context.review
+                var reviewsNovas = await _context.review.Include(m => m.anuncio.Produto).Include(m => m.anuncio.vendedor)
                 .Where(m => m.CompradorFK == comprador.login)
                 .ToListAsync();
+
+
 
                 return View(reviewsNovas);
 
@@ -230,5 +232,7 @@ namespace database_web.Controllers
         {
           return (_context.review?.Any(e => e.Id == id)).GetValueOrDefault();
         }
+
+
     }
 }

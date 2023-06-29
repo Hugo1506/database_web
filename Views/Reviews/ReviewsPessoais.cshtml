@@ -16,7 +16,13 @@
                 @Html.DisplayNameFor(model => model.CompradorFK)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.AnuncioFK)
+                Produto                 
+            </th>
+            <th>
+                Vendedor 
+            </th>
+            <th>
+                Preço
             </th>
         </tr>
     </thead>
@@ -30,8 +36,17 @@
                 @Html.DisplayFor(modelItem => item.CompradorFK)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.AnuncioFK)
+                    @Html.DisplayFor(modelItem => item.anuncio.Produto.nome) 
             </td>
+            <td>
+                    @Html.DisplayFor(modelItem => item.anuncio.vendedor.nome) 
+            </td>
+            <td>
+                    @Html.DisplayFor(modelItem => item.anuncio.preco) € 
+            </td>
+                <td>
+                    <a asp-action="verAnuncio" asp-route-id="@item.Id">ir para o anuncio</a>
+                </td>
 
         </tr>
 }

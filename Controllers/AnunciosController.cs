@@ -29,6 +29,10 @@ namespace database_web.Controllers
         {
 
             var applicationDbContext = _context.anuncio.Include(a => a.Produto);
+
+            
+
+
             return View(await applicationDbContext.ToListAsync());
         }
 
