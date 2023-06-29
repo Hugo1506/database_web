@@ -8,7 +8,7 @@ namespace database_web.Models
         {
             ListaReviews = new HashSet<Review>();
             ListaCarrinhos = new HashSet<Carrinho>();
-            ListaProdutos = new HashSet<Produto>();
+            ListaCompradorProduto = new HashSet<Comprador_produto>();
         }
 
         /// <summary>
@@ -64,7 +64,7 @@ namespace database_web.Models
         /// <summary>
         /// FK para a lista dos produtos que o comprador comprou
         /// </summary>
-        public ICollection<Produto> ListaProdutos { get; set; }
+        public ICollection<Comprador_produto> ListaCompradorProduto { get; set; }
 
 
         /// <summary>

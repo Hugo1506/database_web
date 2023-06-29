@@ -27,6 +27,7 @@ namespace database_web.Data
         public DbSet<Produto> produto { get; set; }
         public DbSet<Review> review { get; set; }
         public DbSet<Vendedor> vendedor { get; set; }
+        public DbSet<Comprador_produto> comprador_produto { get;set; }
 
     }
 }

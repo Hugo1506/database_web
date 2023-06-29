@@ -6,6 +6,9 @@ namespace database_web.Models
 {
     public class Produto
     {
+        public Produto() {
+            ListaCompradorProduto = new HashSet<Comprador_produto>();
+        }
         /// <summary>
         /// Id do um produto
         /// </summary>
@@ -38,5 +41,7 @@ namespace database_web.Models
         [Display(Name = "Carrinho")] 
         public int? CarrinhoFK { get; set; }
         public Carrinho? carrinho { get; set; }
+
+        public ICollection<Comprador_produto> ListaCompradorProduto { get; set; }
     }
 }

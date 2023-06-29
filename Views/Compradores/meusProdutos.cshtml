@@ -1,0 +1,37 @@
+﻿@model IEnumerable<database_web.Models.Comprador_produto>
+
+@{
+    ViewData["Title"] = "meusProdutos";
+}
+
+<h1>Os meus produtos</h1>
+
+
+<table class="table">
+    <thead>
+        <tr>
+          <th>
+                O meu nome
+          </th>
+            <th>
+                O nome do produto
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+             <td>
+                    @Html.DisplayFor(modelItem => item.comprador.nome)
+            </td>
+            <td>
+                    @Html.DisplayFor(modelItem => item.produto.nome)
+            </td>
+            <td>
+                    <a asp-action="verCompradores" asp-route-id="@item.Id">Ver quem também comprou este produto</a>
+            </td>
+                
+        </tr>
+}
+    </tbody>
+</table>

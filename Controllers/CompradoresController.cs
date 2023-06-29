@@ -159,8 +159,29 @@ namespace database_web.Controllers
         {
             return (_context.comprador?.Any(e => e.login == id)).GetValueOrDefault();
         }
-        
-        
+
+        public async Task<IActionResult> meusProdutos()
+        {
+            var userId = User.Identity.Name;
+            if(userId != null)
+            {
+                var compradorAtual =  await _context.comprador.FirstOrDefaultAsync(m => m.email == userId);
+                var produtosComprados = _context.comprador_produto.Include(a => a.produto).Include(a => a.comprador)
+                                            .Where(a => a.CompradorLogin == compradorAtual.login);
+                return View(await produtosComprados.ToListAsync());
+            }
+            return RedirectToAction("Index", "Home");
+            
+           
+        }
+
+        public async Task<IActionResult> verCompradores(int id)
+        {
+            var compra = await _context.comprador_produto.FindAsync(id);
+            var compradoresProduto = _context.comprador_produto.Include(a => a.produto).Include(a => a.comprador)
+                                            .Where(a => a.ProdutoId == compra.ProdutoId);
+            return View(await compradoresProduto.ToListAsync());
+        }
 
 
     }

@@ -84,8 +84,20 @@ namespace database_web.Controllers
                 _context.Entry(comprador).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
 
+                var compradorProduto = new Comprador_produto
+                {
+                    CompradorLogin = comprador.login,
+                    ProdutoId = anuncio.ProdutoFK 
+                };
+
+                compradorProduto.produto = anuncio.Produto;
+                compradorProduto.comprador = comprador;
+
+                _context.comprador_produto.Add(compradorProduto);
+                await _context.SaveChangesAsync();
+
                 //verifica se o comprador também é vendedor se for retira também o dinheiro da venda da sua entrada na tabela vendedor
-                if(vendedorComprador != null)
+                if (vendedorComprador != null)
                 {
                     vendedorComprador.dinheiro += anuncio.preco; 
                     _context.Entry(vendedorComprador).State = EntityState.Modified;

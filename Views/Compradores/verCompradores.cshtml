@@ -1,0 +1,37 @@
+﻿@model IEnumerable<database_web.Models.Comprador_produto>
+
+@{
+    ViewData["Title"] = "verCompradores";
+}
+
+<h1>Outros compradores que também compraram este produto</h1>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                O nome do produto
+            </th>
+            <th>
+                O nome do comprador
+            </th>
+            <th>
+
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.produto.nome)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.comprador.nome)
+            </td>
+
+        </tr>
+}
+    </tbody>
+</table>

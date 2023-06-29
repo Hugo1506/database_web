@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using database_web.Data;
 
@@ -11,9 +12,11 @@ using database_web.Data;
 namespace database_web.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230629181423_erroTeste")]
+    partial class erroTeste
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -324,30 +327,6 @@ namespace database_web.Migrations
                     b.ToTable("comprador");
                 });
 
-            modelBuilder.Entity("database_web.Models.Comprador_produto", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("CompradorLogin")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("ProdutoId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CompradorLogin");
-
-                    b.HasIndex("ProdutoId");
-
-                    b.ToTable("comprador_produto");
-                });
-
             modelBuilder.Entity("database_web.Models.Moderador", b =>
                 {
                     b.Property<string>("login")
@@ -573,25 +552,6 @@ namespace database_web.Migrations
                     b.Navigation("comprador");
                 });
 
-            modelBuilder.Entity("database_web.Models.Comprador_produto", b =>
-                {
-                    b.HasOne("database_web.Models.Comprador", "comprador")
-                        .WithMany("ListaCompradorProduto")
-                        .HasForeignKey("CompradorLogin")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("database_web.Models.Produto", "produto")
-                        .WithMany("ListaCompradorProduto")
-                        .HasForeignKey("ProdutoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("comprador");
-
-                    b.Navigation("produto");
-                });
-
             modelBuilder.Entity("database_web.Models.Produto", b =>
                 {
                     b.HasOne("database_web.Models.Carrinho", "carrinho")
@@ -599,7 +559,7 @@ namespace database_web.Migrations
                         .HasForeignKey("carrinhoId");
 
                     b.HasOne("database_web.Models.Comprador", "comprador")
-                        .WithMany()
+                        .WithMany("ListaProdutos")
                         .HasForeignKey("compradorlogin");
 
                     b.Navigation("carrinho");
@@ -644,7 +604,7 @@ namespace database_web.Migrations
                 {
                     b.Navigation("ListaCarrinhos");
 
-                    b.Navigation("ListaCompradorProduto");
+                    b.Navigation("ListaProdutos");
 
                     b.Navigation("ListaReviews");
                 });
@@ -654,11 +614,6 @@ namespace database_web.Migrations
                     b.Navigation("ListaAnuncio");
 
                     b.Navigation("ListaReviews");
-                });
-
-            modelBuilder.Entity("database_web.Models.Produto", b =>
-                {
-                    b.Navigation("ListaCompradorProduto");
                 });
 
             modelBuilder.Entity("database_web.Models.Vendedor", b =>
