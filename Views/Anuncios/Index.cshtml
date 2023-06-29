@@ -16,9 +16,11 @@
                 @Html.DisplayNameFor(model => model.VendedorFK)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Produto)
+                Nome do produto
             </th>
-            <th></th>
+            <th>
+                Descrição do produto
+            </th>
         </tr>
     </thead>
     <tbody>
@@ -33,6 +35,10 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Produto.nome)
             </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Produto.descricao)
+                </td>
+
             <td>
                 <a asp-action="verReviews" asp-route-id="@item.Id">Ver as reviews</a> |
                 <a asp-action="Edit" asp-route-id="@item.Id">escrever Review</a> |
