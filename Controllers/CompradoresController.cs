@@ -3,6 +3,7 @@ using database_web.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.CodeAnalysis.Elfie.Serialization;
 using Microsoft.EntityFrameworkCore;
 
 namespace database_web.Controllers
@@ -183,6 +184,32 @@ namespace database_web.Controllers
             return View(await compradoresProduto.ToListAsync());
         }
 
+   
+
+        [Route("compradores/test")]
+        [HttpPost]
+        public async Task<IActionResult> Test([FromBody] Dictionary<string, string> credentials)
+        {
+            if (credentials.TryGetValue("login", out var login) && credentials.TryGetValue("password", out var password))
+            {
+                var loginReceived = login;
+                var pass = password;
+
+                var compradorTest = await _context.vendedor
+                 .FirstOrDefaultAsync(m => m.login == loginReceived);
+
+                if (compradorTest == null)
+                {
+                    return BadRequest("User não existe");
+                }
+
+                return Ok();
+            }
+            else
+            {
+                return BadRequest("Invalid credentials format");
+            }
+        }
 
     }
 }
