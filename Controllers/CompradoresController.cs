@@ -1,6 +1,7 @@
 ﻿using database_web.Data;
 using database_web.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.CodeAnalysis.Elfie.Serialization;
@@ -11,10 +12,11 @@ namespace database_web.Controllers
     public class CompradoresController : Controller
     {
         private readonly ApplicationDbContext _context;
-
-        public CompradoresController(ApplicationDbContext context)
+        private readonly UserManager<IdentityUser> _userManager;
+        public CompradoresController(ApplicationDbContext context, UserManager<IdentityUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: Compradores
@@ -184,6 +186,9 @@ namespace database_web.Controllers
             return View(await compradoresProduto.ToListAsync());
         }
 
+
+
+
    
 
         [Route("compradores/test")]
@@ -195,7 +200,7 @@ namespace database_web.Controllers
                 var loginReceived = login;
                 var pass = password;
 
-                var compradorTest = await _context.vendedor
+                var compradorTest = await _context.comprador
                  .FirstOrDefaultAsync(m => m.login == loginReceived);
 
                 if (compradorTest == null)
@@ -203,13 +208,53 @@ namespace database_web.Controllers
                     return BadRequest("User não existe");
                 }
 
-                return Ok();
+                var passwordHasher = new PasswordHasher<Comprador>();
+
+                var passwordVerificationResult = passwordHasher.VerifyHashedPassword(null, compradorTest.password, pass);
+
+                if (passwordVerificationResult == PasswordVerificationResult.Success)
+                {
+                    return Ok("O user existe");
+                }
+
+                return BadRequest("Password incorreta");
             }
             else
             {
-                return BadRequest("Invalid credentials format");
+                return BadRequest("formato errado");
             }
         }
 
+        [Route("compradores/createComprador")]
+        [HttpPost]
+        public async Task<IActionResult> createComprador([FromBody] Dictionary<string, string> credentials) {
+            var emailReceived = credentials.TryGetValue("email", out var email);
+            var passwordReceived = credentials.TryGetValue("password", out var password);
+            var password_confReceived = credentials.TryGetValue("password_conf", out var password_conf);
+            var loginReceived = credentials.TryGetValue("login", out var login);
+            var nomeReceived = credentials.TryGetValue("nome", out var nome);
+            var telefoneReceived = credentials.TryGetValue("telefone", out var telefone);
+            var dinheiroReceived = credentials.TryGetValue("dinheiro", out var dinheiro);
+
+
+            if (emailReceived && passwordReceived)
+            {
+                var user = new IdentityUser
+                {
+                    UserName = email,
+                    Email = email
+                };
+
+                var result = await _userManager.CreateAsync(user, password);
+                return Ok("criado");
+            }
+            else
+            {
+
+                // Return an error response
+                return BadRequest("error");
+            }
+
+        }
     }
 }
