@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.CodeAnalysis.Elfie.Serialization;
 using Microsoft.EntityFrameworkCore;
+using NuGet.Common;
 
 namespace database_web.Controllers
 {
@@ -13,10 +14,12 @@ namespace database_web.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<IdentityUser> _userManager;
-        public CompradoresController(ApplicationDbContext context, UserManager<IdentityUser> userManager)
+        private readonly SignInManager<IdentityUser> _signInManager;
+        public CompradoresController(ApplicationDbContext context, UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
         {
             _context = context;
             _userManager = userManager;
+            _signInManager = signInManager;
         }
 
         // GET: Compradores
@@ -191,9 +194,9 @@ namespace database_web.Controllers
 
    
 
-        [Route("compradores/test")]
+        [Route("compradores/login")]
         [HttpPost]
-        public async Task<IActionResult> Test([FromBody] Dictionary<string, string> credentials)
+        public async Task<IActionResult> login([FromBody] Dictionary<string, string> credentials)
         {
             if (credentials.TryGetValue("login", out var login) && credentials.TryGetValue("password", out var password))
             {
@@ -214,10 +217,21 @@ namespace database_web.Controllers
 
                 if (passwordVerificationResult == PasswordVerificationResult.Success)
                 {
+                    var comprador = await _context.comprador.FirstOrDefaultAsync(m => m.login == login);
+
+                    var user = await _userManager.FindByEmailAsync(comprador.email);
+                    if (user!= null)
+                    {
+                        var result = await _signInManager.PasswordSignInAsync(user, password, false, false);
+                        if (result.Succeeded)
+                        {
+                            return Ok("estou login");
+                        }
+                    }
                     return Ok("O user existe");
                 }
 
-                return BadRequest("Password incorreta");
+                return Ok("Password incorreta");
             }
             else
             {
