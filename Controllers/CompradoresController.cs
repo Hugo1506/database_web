@@ -236,6 +236,19 @@ namespace database_web.Controllers
             var telefoneReceived = credentials.TryGetValue("telefone", out var telefone);
             var dinheiroReceived = credentials.TryGetValue("dinheiro", out var dinheiro);
 
+            var userExists = await _context.Users
+                 .FirstOrDefaultAsync(m => m.Email == email);
+
+            if (userExists != null)
+            {
+                return Ok("Uma conta com este email já existe");
+            }
+
+            if(password != password_conf)
+            {
+                return Ok("passwords não coecidem");
+            }
+
 
             if (emailReceived && passwordReceived)
             {
@@ -246,12 +259,38 @@ namespace database_web.Controllers
                 };
 
                 var result = await _userManager.CreateAsync(user, password);
-                return Ok("criado");
+                if (result.Succeeded)
+                {
+                    var newuser = await _context.Users
+                 .FirstOrDefaultAsync(m => m.Email == email);
+
+                    var comprador = new Comprador()
+                    {
+                        email = email,
+                        login = login,
+                        password = newuser.PasswordHash,
+                        nome = nome,
+                        telefone = telefone,
+                        dinheiro = decimal.Parse(dinheiro)
+                    };
+
+                    
+
+                    comprador.UserId = newuser.Id;
+
+                    _context.Add(comprador);
+                    await _context.SaveChangesAsync();
+
+                    return Ok("criado");
+                }
+                else
+                {
+                    return Ok("A password tem de conter: 6 caracteres, 1 simbolo, 1 letra maiscula e um número");
+                }
+                
             }
             else
             {
-
-                // Return an error response
                 return BadRequest("error");
             }
 
