@@ -309,5 +309,25 @@ namespace database_web.Controllers
             }
 
         }
+        [Route("compradores/createProdutos")]
+        [HttpPost]
+        public async Task<IActionResult> createProdutos([FromBody] Dictionary<string, string> Produto)
+        {
+            var nomeReceived = Produto.TryGetValue("nome", out var nome);
+            var descricaoReceived = Produto.TryGetValue("descricao", out var descricao);
+
+
+            var novoProduto = new Produto()
+            {
+                nome = nome,
+                descricao = descricao 
+
+            };
+
+            _context.Add(novoProduto);
+            await _context.SaveChangesAsync();
+            return Ok("Produto criado com sucesso");
+
+        }
     }
 }
