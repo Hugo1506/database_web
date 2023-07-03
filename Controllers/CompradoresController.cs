@@ -26,7 +26,7 @@ namespace database_web.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
-            
+
             return _context.comprador != null ?
                         View(await _context.comprador.ToListAsync()) :
                         Problem("Entity set 'ApplicationDbContext.comprador'  is null.");
@@ -169,16 +169,16 @@ namespace database_web.Controllers
         public async Task<IActionResult> meusProdutos()
         {
             var userId = User.Identity.Name;
-            if(userId != null)
+            if (userId != null)
             {
-                var compradorAtual =  await _context.comprador.FirstOrDefaultAsync(m => m.email == userId);
+                var compradorAtual = await _context.comprador.FirstOrDefaultAsync(m => m.email == userId);
                 var produtosComprados = _context.comprador_produto.Include(a => a.produto).Include(a => a.comprador)
                                             .Where(a => a.CompradorLogin == compradorAtual.login);
                 return View(await produtosComprados.ToListAsync());
             }
             return RedirectToAction("Index", "Home");
-            
-           
+
+
         }
 
         public async Task<IActionResult> verCompradores(int id)
@@ -192,7 +192,7 @@ namespace database_web.Controllers
 
 
 
-   
+
 
         [Route("compradores/login")]
         [HttpPost]
@@ -220,12 +220,12 @@ namespace database_web.Controllers
                     var comprador = await _context.comprador.FirstOrDefaultAsync(m => m.login == login);
 
                     var user = await _userManager.FindByEmailAsync(comprador.email);
-                    if (user!= null)
+                    if (user != null)
                     {
                         var result = await _signInManager.PasswordSignInAsync(user, password, false, false);
                         if (result.Succeeded)
                         {
-                            return Ok("estou login");
+                            return Ok(user.Id);
                         }
                     }
                     return Ok("O user existe");
@@ -258,7 +258,7 @@ namespace database_web.Controllers
                 return Ok("Uma conta com este email já existe");
             }
 
-            if(password != password_conf)
+            if (password != password_conf)
             {
                 return Ok("passwords não coecidem");
             }
@@ -288,7 +288,7 @@ namespace database_web.Controllers
                         dinheiro = decimal.Parse(dinheiro)
                     };
 
-                    
+
 
                     comprador.UserId = newuser.Id;
 
@@ -301,7 +301,7 @@ namespace database_web.Controllers
                 {
                     return Ok("A password tem de conter: 6 caracteres, 1 simbolo, 1 letra maiscula e um número");
                 }
-                
+
             }
             else
             {
@@ -320,7 +320,7 @@ namespace database_web.Controllers
             var novoProduto = new Produto()
             {
                 nome = nome,
-                descricao = descricao 
+                descricao = descricao
 
             };
 
@@ -329,5 +329,62 @@ namespace database_web.Controllers
             return Ok("Produto criado com sucesso");
 
         }
+
+        [Route("compradores/getProdutos")]
+        [HttpGet]
+        public async Task<IActionResult> getProdutos()
+        {
+            var produtos = await _context.produto.ToListAsync();
+            return Json(produtos);
+        }
+
+        [Route("compradores/createAnuncio")]
+        [HttpPost]
+        public async Task<IActionResult> createAnuncio([FromBody] Dictionary<string, string> Anuncio)
+        {
+            var produtoIdReceived = Anuncio.TryGetValue("produto_id", out var produto_id);
+            var precoReceived = Anuncio.TryGetValue("preco", out var preco);
+            var userIdReceived = Anuncio.TryGetValue("userId", out var userId);
+
+            var comprador = await _context.comprador.FirstOrDefaultAsync(m => m.UserId == userId);
+            var vendedor = await _context.vendedor.FirstOrDefaultAsync(m => m.email == comprador.email);
+                if (vendedor == null)
+                {
+                 
+                    
+
+                    var vendedorNovo = new Vendedor
+                    {
+                        login = comprador.login,
+                        password = comprador.password,
+                        nome = comprador.nome,
+                        telefone = comprador.telefone,
+                        email = comprador.email,
+                        dinheiro = comprador.dinheiro
+                    };
+
+                    _context.Add(vendedorNovo);
+                    await _context.SaveChangesAsync();
+                    vendedor = vendedorNovo;
+                }
+
+                 if (produto_id!=null && preco!=null)
+                 {
+                    var anuncioNovo = new Anuncio()
+                    {
+                    ProdutoFK = int.Parse(produto_id),
+                    vendedor = vendedor,
+                    VendedorFK = vendedor.login,
+                    preco = Decimal.Parse(preco)
+                    };
+                    
+                    _context.Add(anuncioNovo);
+                    await _context.SaveChangesAsync();
+                return Ok("anuncio criado com sucesso");
+                }
+                
+                return Ok("Erro na criação do anuncio");
+        }
+            
     }
 }
