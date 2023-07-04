@@ -8,6 +8,7 @@ using Microsoft.CodeAnalysis.Elfie.Serialization;
 using Microsoft.EntityFrameworkCore;
 using NuGet.Common;
 
+
 namespace database_web.Controllers
 {
     public class CompradoresController : Controller
@@ -108,7 +109,7 @@ namespace database_web.Controllers
                     _context.Update(comprador);
                     await _context.SaveChangesAsync();
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (Microsoft.EntityFrameworkCore.DbUpdateConcurrencyException)
                 {
                     if (!CompradorExists(comprador.login))
                     {
@@ -346,6 +347,8 @@ namespace database_web.Controllers
             var precoReceived = Anuncio.TryGetValue("preco", out var preco);
             var userIdReceived = Anuncio.TryGetValue("userId", out var userId);
 
+            preco = preco.Replace(".", ",");
+
             var comprador = await _context.comprador.FirstOrDefaultAsync(m => m.UserId == userId);
             var vendedor = await _context.vendedor.FirstOrDefaultAsync(m => m.email == comprador.email);
                 if (vendedor == null)
@@ -385,6 +388,15 @@ namespace database_web.Controllers
                 
                 return Ok("Erro na criação do anuncio");
         }
-            
+
+        [Route("compradores/getAnuncios")]
+        [HttpGet]
+        public async Task<IActionResult> getAuncios()
+        {
+            var anuncios = await _context.anuncio.ToListAsync();
+            return Json(anuncios);
+        }
+
     }
+    
 }
