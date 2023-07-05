@@ -351,42 +351,42 @@ namespace database_web.Controllers
 
             var comprador = await _context.comprador.FirstOrDefaultAsync(m => m.UserId == userId);
             var vendedor = await _context.vendedor.FirstOrDefaultAsync(m => m.email == comprador.email);
-                if (vendedor == null)
+            if (vendedor == null)
+            {
+
+
+
+                var vendedorNovo = new Vendedor
                 {
-                 
-                    
+                    login = comprador.login,
+                    password = comprador.password,
+                    nome = comprador.nome,
+                    telefone = comprador.telefone,
+                    email = comprador.email,
+                    dinheiro = comprador.dinheiro
+                };
 
-                    var vendedorNovo = new Vendedor
-                    {
-                        login = comprador.login,
-                        password = comprador.password,
-                        nome = comprador.nome,
-                        telefone = comprador.telefone,
-                        email = comprador.email,
-                        dinheiro = comprador.dinheiro
-                    };
+                _context.Add(vendedorNovo);
+                await _context.SaveChangesAsync();
+                vendedor = vendedorNovo;
+            }
 
-                    _context.Add(vendedorNovo);
-                    await _context.SaveChangesAsync();
-                    vendedor = vendedorNovo;
-                }
-
-                 if (produto_id!=null && preco!=null)
-                 {
-                    var anuncioNovo = new Anuncio()
-                    {
+            if (produto_id != null && preco != null)
+            {
+                var anuncioNovo = new Anuncio()
+                {
                     ProdutoFK = int.Parse(produto_id),
                     vendedor = vendedor,
                     VendedorFK = vendedor.login,
                     preco = Decimal.Parse(preco)
-                    };
-                    
-                    _context.Add(anuncioNovo);
-                    await _context.SaveChangesAsync();
+                };
+
+                _context.Add(anuncioNovo);
+                await _context.SaveChangesAsync();
                 return Ok("anuncio criado com sucesso");
-                }
-                
-                return Ok("Erro na criação do anuncio");
+            }
+
+            return Ok("Erro na criação do anuncio");
         }
 
         [Route("compradores/getAnuncios")]
@@ -395,6 +395,40 @@ namespace database_web.Controllers
         {
             var anuncios = await _context.anuncio.ToListAsync();
             return Json(anuncios);
+        }
+
+        [Route("compradores/getSaldo")]
+        [HttpGet]
+        public async Task<IActionResult> getSaldo([FromQuery] string userId)
+        {
+            var comprador = await _context.comprador.FirstOrDefaultAsync(c => c.UserId == userId);
+            var saldo = comprador.dinheiro;
+
+            return Json(saldo);
+
+        }
+
+        [Route("compradores/postComprar")]
+        [HttpPost]
+        public async Task<IActionResult> postComprar([FromBody] Dictionary<string, string> compra)
+        {
+            var anuncioReceived = compra.TryGetValue("anuncio", out var anuncio);
+            var userReceived = compra.TryGetValue("user", out var user);
+
+            var comprador = await _context.comprador.FirstOrDefaultAsync(c => c.UserId == user);
+            
+            var anunc = await _context.anuncio.FirstOrDefaultAsync(a => a.Id == int.Parse(anuncio));
+
+            if(comprador.dinheiro>= anunc.preco)
+            {
+                comprador.dinheiro -= anunc.preco;
+                _context.Entry(comprador).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+                return Ok(comprador.dinheiro.ToString());
+            }
+
+            return Ok(comprador.dinheiro.ToString());
+            
         }
 
     }
