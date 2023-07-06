@@ -424,11 +424,30 @@ namespace database_web.Controllers
                 comprador.dinheiro -= anunc.preco;
                 _context.Entry(comprador).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
+
+                var vendedor = await _context.vendedor.FirstOrDefaultAsync(v => v.login == anunc.VendedorFK);
+
+                if (vendedor != null)
+                {
+                    vendedor.dinheiro += anunc.preco;
+                    _context.Entry(vendedor).State = EntityState.Modified;
+                    await _context.SaveChangesAsync();
+                }
+
                 return Ok(comprador.dinheiro.ToString());
             }
 
             return Ok(comprador.dinheiro.ToString());
             
+        }
+
+        [Route("compradores/getReviews")]
+        [HttpGet]    
+        public async Task<IActionResult> getReviews([FromQuery] int anunc)
+        {
+
+            var reviews = await _context.review.Where(r => r.AnuncioFK == anunc).ToListAsync();
+            return Json(reviews);
         }
 
     }
