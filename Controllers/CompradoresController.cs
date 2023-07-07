@@ -450,6 +450,43 @@ namespace database_web.Controllers
             return Json(reviews);
         }
 
+        [Route("compradores/getReviewNome")]
+        [HttpGet]
+        public async Task<IActionResult> getReviewNome([FromQuery] int rev)
+        {
+            var review = await _context.review.FirstOrDefaultAsync(r => r.Id == rev);
+            var comprador = await _context.comprador.FirstOrDefaultAsync(c => c.login == review.CompradorFK);
+            return Json(comprador.nome);
+        }
+
+        [Route("compradores/createReview")]
+        [HttpPost]
+        public async Task<IActionResult> createReview([FromBody] Dictionary<string, string> review)
+        {
+            var conteudoReceived = review.TryGetValue("conteudo", out var conteudo);
+            var userReceived = review.TryGetValue("user", out var user);
+            var anuncioReceived = review.TryGetValue("anuncio", out var anuncio);
+
+            var comprador = await _context.comprador.FirstOrDefaultAsync(c => c.UserId == user);
+
+            var anunc = await _context.anuncio.FirstOrDefaultAsync(a => a.Id == int.Parse(anuncio));
+
+            var novoReview = new Review()
+            {
+                AnuncioFK = anunc.Id,
+                anuncio = anunc,
+                comprador =comprador,
+                CompradorFK = comprador.login,
+                conteudo = conteudo
+            };
+
+            _context.Add(novoReview);
+            await _context.SaveChangesAsync();
+
+            return Ok("review criada com sucesso");
+
+        }
+
     }
     
 }
