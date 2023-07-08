@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.CodeAnalysis.Elfie.Serialization;
 using Microsoft.EntityFrameworkCore;
 using NuGet.Common;
-
+using System.Runtime.InteropServices;
 
 namespace database_web.Controllers
 {
@@ -434,6 +434,17 @@ namespace database_web.Controllers
                     await _context.SaveChangesAsync();
                 }
 
+                var compradorProduto = new Comprador_produto
+                {
+                    CompradorLogin = comprador.login,
+                    ProdutoId = anunc.ProdutoFK
+                };
+                compradorProduto.produto = anunc.Produto;
+                compradorProduto.comprador = comprador;
+
+                _context.comprador_produto.Add(compradorProduto);
+                await _context.SaveChangesAsync();
+
                 return Ok(comprador.dinheiro.ToString());
             }
 
@@ -448,15 +459,6 @@ namespace database_web.Controllers
 
             var reviews = await _context.review.Where(r => r.AnuncioFK == anunc).ToListAsync();
             return Json(reviews);
-        }
-
-        [Route("compradores/getReviewNome")]
-        [HttpGet]
-        public async Task<IActionResult> getReviewNome([FromQuery] int rev)
-        {
-            var review = await _context.review.FirstOrDefaultAsync(r => r.Id == rev);
-            var comprador = await _context.comprador.FirstOrDefaultAsync(c => c.login == review.CompradorFK);
-            return Json(comprador.nome);
         }
 
         [Route("compradores/createReview")]
@@ -487,6 +489,30 @@ namespace database_web.Controllers
 
         }
 
+        [Route("compradores/getAnunciosVendedor")]
+        [HttpGet]
+        public async Task<IActionResult> getAnunciosVendedor([FromQuery] string vend)
+        {
+            var anuncios = await _context.anuncio.Where(a => a.VendedorFK == vend).ToListAsync();
+            return Json(anuncios);
+        }
+
+        [Route("compradores/getProdutosComprados")]
+        [HttpGet]
+        public async Task<IActionResult> getProdutosComprados([FromQuery] string user)
+        {
+            var comprador = await _context.comprador.FirstOrDefaultAsync(c => c.UserId == user);
+
+            var produtoComprador = await _context.comprador_produto
+                .Include(cp => cp.produto)
+                .Where(cp => cp.CompradorLogin == comprador.login)
+                .Select(cp => cp.produto)
+                .ToListAsync();
+
+            
+            
+            return Json(produtoComprador);
+        }
     }
     
 }
