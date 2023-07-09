@@ -513,6 +513,43 @@ namespace database_web.Controllers
             
             return Json(produtoComprador);
         }
+
+        [Route("compradores/getMeusReviews")]
+        [HttpGet]
+        public async Task<IActionResult> getMeusReviews([FromQuery] string user)
+        {
+            var comprador = await _context.comprador.FirstOrDefaultAsync(c => c.UserId == user);
+
+            var reviews = await _context.review
+                .Where(r => r.CompradorFK == comprador.login)
+                .Select(r => new Review
+                {
+                    Id = r.Id,
+                    AnuncioFK = r.AnuncioFK,
+                    CompradorFK = r.CompradorFK,
+                    conteudo = r.conteudo,
+                })
+                .ToListAsync();
+            
+            return Json(reviews);
+        }
+
+        [Route("compradores/getAnuncioById")]
+        [HttpGet]
+        public async Task<IActionResult> getAnuncioById([FromQuery] int anunc)
+        {
+            var anuncio = await _context.anuncio.FirstOrDefaultAsync(a => a.Id == anunc);
+            return Json(anuncio);
+        }
+
+        [Route("compradores/getProdutoNomeById")]
+        [HttpGet]
+        public async Task<IActionResult> getProdutoNomeById([FromQuery] int id)
+        {
+            var produto = await _context.produto.FirstOrDefaultAsync(p => p.Id == id);
+            var produto_nome = produto.nome;
+            return Json(produto_nome);
+        }
     }
     
 }
