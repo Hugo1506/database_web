@@ -550,6 +550,22 @@ namespace database_web.Controllers
             var produto_nome = produto.nome;
             return Json(produto_nome);
         }
+
+        [Route("compradores/getQuemComprou")]
+        [HttpGet]
+        public async Task<IActionResult> getQuemComprou([FromQuery] int id)
+        {
+
+            var produtoComprador = await _context.comprador_produto
+                .Include(cp => cp.comprador)
+                .Where(cp => cp.ProdutoId == id)
+                .Select(cp => cp.comprador)
+                .Distinct()
+                .ToListAsync();
+
+            return Json(produtoComprador);
+        }
+
     }
     
 }
