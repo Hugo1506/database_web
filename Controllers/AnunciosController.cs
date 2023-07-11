@@ -27,15 +27,25 @@ namespace database_web.Controllers
         // GET: Anuncios
         public async Task<IActionResult> Index(int? review)
         {
+            var userId = User.Identity.Name;
+
+            var comprador = await _context.comprador.FirstOrDefaultAsync(c => c.email == userId);
+
             if (review != null)
             {
                 var applicationDbContext = _context.anuncio.Include(a => a.Produto)
                                             .Where(a => a.Id == review ) ;
+
+                ViewData["saldo"] = comprador.dinheiro;
+
                 return View(await applicationDbContext.ToListAsync());
             }
             else
             {
                 var applicationDbContext = _context.anuncio.Include(a => a.Produto);
+
+                ViewData["saldo"] = comprador.dinheiro;
+
                 return View(await applicationDbContext.ToListAsync());
             }
             
@@ -130,14 +140,18 @@ namespace database_web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,preco,ProdutoFK")] Anuncio anuncio)
+        public async Task<IActionResult> Create([Bind("Id,ProdutoFK")] Anuncio anuncio, string preco)
         {
 
             //verifica se foram inseridos os dados corretamente
-            if (anuncio.ProdutoFK ==null || anuncio.preco == null)
+            if (anuncio.ProdutoFK ==null || preco == null)
             {
                 return View(anuncio);
             }
+
+            //faz com que o preço seja armazenado corretamente
+            preco = preco.Replace(".", ",");
+            anuncio.preco = Decimal.Parse(preco);
 
             //user logged in 
             var userId = User.Identity.Name;
@@ -210,6 +224,7 @@ namespace database_web.Controllers
         // GET: Anuncios/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
+            var anunc = await _context.anuncio.FirstOrDefaultAsync(a => a.Id == id);
             //verifica se alguem está logged in
             var userId = User.Identity.Name;
             if (userId != null)
@@ -222,8 +237,8 @@ namespace database_web.Controllers
                     //moderador conseguido a partir do email do comprador
                     var moderador = await _context.moderador.FirstOrDefaultAsync(m => m.email == comprador.email);
 
-                    //se o comprador existir procede para a página de delete senão mostra uma página de erro
-                    if (moderador != null)
+                    //se o user é um moderador ou o vendedor que fez o anuncio existir procede para a página de delete senão mostra uma página de erro
+                    if (moderador != null || comprador.login == anunc.VendedorFK)
                     {
 
                         if (id == null || _context.anuncio == null)

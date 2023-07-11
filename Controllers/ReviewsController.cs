@@ -137,20 +137,23 @@ namespace database_web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,conteudo,CompradorFK,AnuncioFK,ModeradorFK")] Review review)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,conteudo")] Review novaReview)
         {
-            if (id != review.Id)
+            var review = await _context.review.FirstOrDefaultAsync(r => r.Id == novaReview.Id);
+
+            if (id != novaReview.Id)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
-            {
+            
                 try
                 {
-                    _context.Update(review);
-                    await _context.SaveChangesAsync();
-                }
+                review.conteudo = novaReview.conteudo;
+                _context.Entry(review).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+                return RedirectToAction("index", new { anunc = review.AnuncioFK }); ;
+            }
                 catch (DbUpdateConcurrencyException)
                 {
                     if (!ReviewExists(review.Id))
@@ -162,35 +165,32 @@ namespace database_web.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(review);
+           
         }
 
         // GET: Reviews/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
+            //review
+            var rev = await _context.review.FirstOrDefaultAsync(r => r.Id == id);
             //user que está logged in 
             var userId = User.Identity.Name;
             if (userId != null)
             {
                 //comprador que está logged in 
-                var comprador = await _context.vendedor
+                var moderador = await _context.moderador
                  .FirstOrDefaultAsync(m => m.email == userId);
-                if (comprador != null)
-                {
-                    if (id == null || _context.review == null)
-                    {
-                        return NotFound();
-                    }
 
+                var comprador = await _context.comprador
+                 .FirstOrDefaultAsync(m => m.email == userId);
+                if (moderador != null || comprador.login == rev.CompradorFK)
+                {
                     //review a ser a pagada
                     var review = await _context.review
                         .FirstOrDefaultAsync(m => m.Id == id);
-                    if (review == null)
-                    {
-                        return NotFound();
-                    }
+
+                    await DeleteConfirmed(review.Id);
+                    
 
                    return RedirectToAction("Index", "Home");
 

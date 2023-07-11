@@ -5,12 +5,14 @@
 }
 
 <h1>Anuncios</h1>
-
+<h2>
+    saldo: @ViewBag.saldo €
+</h2>
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.preco)
+                @Html.DisplayNameFor(model => model.preco) 
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.VendedorFK)
@@ -27,7 +29,7 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.preco)
+                @Html.DisplayFor(modelItem => item.preco) €
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.VendedorFK)
@@ -43,7 +45,7 @@
                 <a asp-action="verReviews" asp-route-id="@item.Id">Ver as reviews</a> |
                 <a asp-action="Edit" asp-route-id="@item.Id">escrever Review</a> |
                 <a asp-action="Compra" asp-route-id="@item.Id">Comprar</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                <a asp-action="Delete" asp-route-id="@item.Id">Apagar</a>
             </td>
         </tr>
 }
