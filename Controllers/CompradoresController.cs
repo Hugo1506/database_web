@@ -566,6 +566,39 @@ namespace database_web.Controllers
             return Json(produtoComprador);
         }
 
+        [Route("compradores/editarReview")]
+        [HttpPost]
+        public async Task<IActionResult> editarReview([FromBody] Dictionary<string, string> review)
+        {
+            var conteudoReceived = review.TryGetValue("conteudo", out var conteudo);
+            var idReceived = review.TryGetValue("id", out var id);
+
+            var rev = await _context.review.FirstOrDefaultAsync(r => r.Id == int.Parse(id));
+
+            if(rev != null)
+            {
+                rev.conteudo = conteudo;
+                _context.Entry(rev).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+                return Ok("review criada com sucesso");
+            }
+            return Ok("Erro na edição da review");
+        }
+
+        
+        [Route("compradores/apagarReview")]
+        [HttpGet]
+        public async Task<IActionResult> apagarReview([FromQuery] int id)
+        {
+            var review = await _context.review.FirstOrDefaultAsync(r => r.Id == id);
+
+            _context.review.Remove(review);
+            await _context.SaveChangesAsync();
+           
+
+            return Json("ok");
+        }
+
     }
     
 }
