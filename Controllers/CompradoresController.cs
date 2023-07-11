@@ -162,9 +162,11 @@ namespace database_web.Controllers
 
         public async Task<IActionResult> meusProdutos()
         {
+            //se o user estiver autenticado
             var userId = User.Identity.Name;
             if(userId != null)
             {
+                //consegue os produtos comprados pelo user atual
                 var compradorAtual =  await _context.comprador.FirstOrDefaultAsync(m => m.email == userId);
                 var produtosComprados = _context.comprador_produto.Include(a => a.produto).Include(a => a.comprador)
                                             .Where(a => a.CompradorLogin == compradorAtual.login);
