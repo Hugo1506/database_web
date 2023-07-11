@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using database_web.Data;
 using database_web.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace database_web.Controllers
 {
+    [Authorize]
     public class CarrinhosController : Controller
     {
         private readonly ApplicationDbContext _context;

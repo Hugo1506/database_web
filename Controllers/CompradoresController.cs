@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace database_web.Controllers
 {
+    [Authorize]
     public class CompradoresController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -17,7 +18,6 @@ namespace database_web.Controllers
         }
 
         // GET: Compradores
-        [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
             

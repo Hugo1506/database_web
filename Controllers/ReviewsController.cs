@@ -9,9 +9,11 @@ using database_web.Data;
 using database_web.Models;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.Identity.Client;
+using Microsoft.AspNetCore.Authorization;
 
 namespace database_web.Controllers
 {
+    [Authorize]
     public class ReviewsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -24,10 +26,14 @@ namespace database_web.Controllers
         // GET: Reviews
         public async Task<IActionResult> Index(int anunc)
         {
-
+            if(anunc == 0)
+            {
+                return RedirectToAction("Index", "Anuncios");
+            }
             var reviewsNovas = await _context.review.Include(m=>m.anuncio)
             .Where(m => m.AnuncioFK == anunc)
             .ToListAsync();
+            
             return View(reviewsNovas);
         }
 
@@ -129,6 +135,17 @@ namespace database_web.Controllers
             {
                 return NotFound();
             }
+
+            //comprador que está login
+            var userId = User.Identity.Name;
+            var comprador = await _context.comprador.FirstOrDefaultAsync(c => c.email == userId);
+
+            //se o comprador não for o autor da review ele irá receber uma pagina de erro
+            if (comprador.login != review.CompradorFK)
+            {
+                return View("noPerms");
+            }
+            //continua para a pagina de edit
             return View(review);
         }
 
@@ -139,6 +156,7 @@ namespace database_web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,conteudo")] Review novaReview)
         {
+
             var review = await _context.review.FirstOrDefaultAsync(r => r.Id == novaReview.Id);
 
             if (id != novaReview.Id)
@@ -146,14 +164,13 @@ namespace database_web.Controllers
                 return NotFound();
             }
 
-            
                 try
                 {
-                review.conteudo = novaReview.conteudo;
-                _context.Entry(review).State = EntityState.Modified;
-                await _context.SaveChangesAsync();
-                return RedirectToAction("index", new { anunc = review.AnuncioFK }); ;
-            }
+                    review.conteudo = novaReview.conteudo;
+                    _context.Entry(review).State = EntityState.Modified;
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction("index", new { anunc = review.AnuncioFK }); ;
+                }
                 catch (DbUpdateConcurrencyException)
                 {
                     if (!ReviewExists(review.Id))
@@ -165,6 +182,8 @@ namespace database_web.Controllers
                         throw;
                     }
                 }
+            
+               
            
         }
 
@@ -185,10 +204,11 @@ namespace database_web.Controllers
                  .FirstOrDefaultAsync(m => m.email == userId);
                 if (moderador != null || comprador.login == rev.CompradorFK)
                 {
-                    //review a ser a pagada
+                    //review a ser apagada
                     var review = await _context.review
                         .FirstOrDefaultAsync(m => m.Id == id);
 
+                    //apaga a review
                     await DeleteConfirmed(review.Id);
                     
 

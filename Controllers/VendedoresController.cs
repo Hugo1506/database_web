@@ -8,10 +8,11 @@ using Microsoft.EntityFrameworkCore;
 using database_web.Data;
 using database_web.Models;
 using Microsoft.AspNetCore.Http;
-
+using Microsoft.AspNetCore.Authorization;
 
 namespace database_web.Controllers
 {
+    [Authorize]
     public class VendedoresController : Controller
     {
         private readonly ApplicationDbContext _context;
